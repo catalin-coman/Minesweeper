@@ -4,7 +4,8 @@ var gameStatus = {
 	bombCells: 0,
 	gameboard_ids: [],
 	searched_ids: [],
-	ids_to_search: []
+	ids_to_search: [],
+	flagged_ids: []
 }
 
 // creating the grid
@@ -30,7 +31,7 @@ function createGrid() {
 
 			assignBombs(rowCell)
 
-			defaultCellStyle(rowCell)
+			defaultCellStyle(rowCell.id)
 
 			// we set the clickedCellvariable as the current cell
 			rowCell.addEventListener('click', function (e) { clickedCell = e.target; })
@@ -54,7 +55,7 @@ function addClickEvent() {
 		clickedCell.oncontextmenu = function (ee) {
 			ee.preventDefault()
 		}
-		flaggedCellStyle(parseInt(clickedCell.id))
+		flaggCell(parseInt(clickedCell.id))
 	})
 }
 
@@ -111,6 +112,19 @@ function checkCell() {
 	}
 }
 
+function flaggCell(cell_id) {
+	/* unflagging a cell */
+	if (gameStatus.flagged_ids.includes(cell_id)) {
+		gameStatus.flagged_ids.splice(gameStatus.flagged_ids.indexOf(cell_id), 1)
+		defaultCellStyle(cell_id)
+		
+	/* flagging a cell */
+	} else {
+		gameStatus.flagged_ids.push(cell_id)
+		flaggedCellStyle(cell_id)
+	}
+}
+
 function assignBombs(currentCell) {
 	/* -1 are the bombs */
 	/* we can increase de difficulty of the game by changing number of rows */
@@ -143,16 +157,18 @@ function checkWin() {
 	if (gameStatus.gridCells - gameStatus.clickedCells == gameStatus.bombCells) {
 		alert('WIN!')
 	}
+	console.log(gameStatus.gridCells)
 }
 
 function randomNumberGenerator(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function defaultCellStyle(rowCell) {
-	rowCell.style.width = rowCell.style.height = '20px'
-	rowCell.style.backgroundColor = 'gray'
-	rowCell.style.color = 'gray'
+function defaultCellStyle(cell_id) {
+	document.getElementById(cell_id).style.width = '20px'
+	document.getElementById(cell_id).style.height = '20px'
+	document.getElementById(cell_id).style.backgroundColor = 'gray'
+	document.getElementById(cell_id).style.color = 'gray'
 }
 
 function clickedCellStyle(cellId) {
@@ -161,13 +177,8 @@ function clickedCellStyle(cellId) {
 	++gameStatus.clickedCells
 }
 
-function flaggedCellStyle(cellId) {
-	/* unflagging a cell */
-	if (document.getElementById(cellId).style.backgroundColor == 'black') {
-		defaultCellStyle(cellId)
-	/* flagging a cell */
-	} else {
-		document.getElementById(cellId).style.backgroundColor = 'black'
-		document.getElementById(cellId).style.color = 'black'
-	}
+function flaggedCellStyle(cell_id) {
+	document.getElementById(cell_id).style.backgroundColor = 'black'
+	document.getElementById(cell_id).style.color = 'black'
 }
+
