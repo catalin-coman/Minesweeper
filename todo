@@ -16,9 +16,6 @@ Javascript
   6.  wining the game                               - DONE
   7.  loosing the game                              - DONE
 
-  8. autoclick the cells that have innnerHtml == 0  - 
-    - repeat leftClick function if innerHtml == 0
-
 CSS
   1.  H1                                            - DONE
   2.  Board size                                    - DONE
@@ -27,6 +24,4 @@ CSS
 
 BUGS
   1.  it doesnt show win messagen properly
-  2.  autocheck function only checks nearby cells
-    - we must implement it so that it checks all
-    cells ultill it finds a number != 0
+  2.  user cannot unflag a cell

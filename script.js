@@ -1,7 +1,10 @@
 var gameStatus = {
 	gridCells: 0,
 	clickedCells: 0,
-	bombCells: 0
+	bombCells: 0,
+	gameboard_ids: [],
+	searched_ids: [],
+	ids_to_search: []
 }
 
 // creating the grid
@@ -20,8 +23,10 @@ function createGrid() {
 		var tableRow = table.insertRow(i);
 		for (var ii = 0; ii < size; ++ii) {
 			var rowCell = tableRow.insertCell(ii);
-
+			
+			/* assigning cell id's and saving them in an array */
 			rowCell.id = (i + 1) * 100 + (ii + 1)
+			gameStatus.gameboard_ids.push(parseInt(rowCell.id))
 
 			assignBombs(rowCell)
 
@@ -38,9 +43,9 @@ function addClickEvent() {
 
 	// left click
 	window.addEventListener('click', function () {
-		clickedCellStyle(parseInt(clickedCell.id))
-		checkNearCells(parseInt(clickedCell.id))
-		winGame()
+		gameStatus.ids_to_search.push(parseInt(clickedCell.id))
+		checkCell()
+		checkWin()
 	})
 
 	// right click
@@ -53,111 +58,79 @@ function addClickEvent() {
 	})
 }
 
-function checkNearCells(currentId) {
-	if (document.getElementById(currentId).innerHTML == -1) {
-		loseGame(currentId)
+
+function checkCell() {
+	/* user clicks a bomb cell */
+	if (searchForBomb(gameStatus.ids_to_search[0])) {
+		loseGame(gameStatus.ids_to_search[0])
 
 	} else {
-		/* 
-		the possitions array represents the difference between 
-		the id of the current cell and the id's of nearby cells
-		*/
-		var possitions = [-1, -101, -100, -99, 1, 101, 100, 99]
-		var bombsNearby = 0
 
-		for (let possition of possitions) {
-			if (checkForBomb(currentId, possition)) {
-				++bombsNearby
+		/* checking if there are ids to be searched for */
+		while (gameStatus.ids_to_search.length > 0) {
+
+			/* the array represents the difference between the current cell ID and nearby cells ID */
+			let near_cell_possitions = [-1, -101, -100, -99, 1, 101, 100, 99]
+			let bombsNear = 0
+
+			for (let possition of near_cell_possitions) {
+				let new_id = gameStatus.ids_to_search[0] + possition
+				if (searchForId(new_id)) {
+					if (searchForBomb(new_id)) {
+						++ bombsNear
+					}
+				}
 			}
-		}
 
-		/* displaying the number of nearby bombs */
-		document.getElementById(currentId).innerHTML = bombsNearby
+			/* display number of bombs nearby inside the cell*/
+			if (bombsNear > 0) {
+				document.getElementById(gameStatus.ids_to_search[0]).innerHTML = bombsNear
+				clickedCellStyle(gameStatus.ids_to_search[0])
+			}
+			
+			else {
+				document.getElementById(gameStatus.ids_to_search[0]).innerHTML = ' '
+				clickedCellStyle(gameStatus.ids_to_search[0])
 
-		/* we check near cells for bombs */
-		//autoCheck(currentId, bombsNearby)
-	}
-}
+				/* we add near cells id's to id's to search for if no bombs are nearby */
+				for (let possition of near_cell_possitions) {
+					var new_id = gameStatus.ids_to_search[0] + possition
 
+					/* adding the new id to the array of id's to search for 
+					if it is within the gameboard id's and hasn't been searched for yet  */
+					if (searchForId(new_id) && !gameStatus.searched_ids.includes(new_id)) {
+						gameStatus.ids_to_search.push(new_id)
+						gameStatus.searched_ids.push(new_id)
+					}
+				}
+			}
 
-
-
-/* 
-recurrent function for checking near cells
-Not tested yet!!
-
-we must pass another parameter to the function (bombsNear)
-
-*/
-
-
-function checkCells2(Cell_Id, bombsNear) {
-	if (bombsNear != 0) {
-		return
-	}
-
-	let bombsNearby = 0 /* ??? */
-	let near_possitions = [-1, -101, -100, -99, 1, 101, 100, 99]
-
-	for (let possition of near_possitions) {
-		if (checkForBomb(Cell_Id, possition)) {
-			++ bombsNearby
+			/* removing the searched id */
+			gameStatus.ids_to_search.shift()
 		}
 	}
-
-	document.getElementById(Cell_Id).innerHTML = bombsNearby
-
-	for (let possition of near_possitions) {
-		checkCells2(Cell_Id + possition, bombsNearby)
-		clickedCellStyle(Cell_Id + possition)
-	}
 }
-
-
-
-
-// checking near cells for bombs and autoclicking them
-/* 
-it doesn't work!!
-*/
-
-function autoCheck(newCellId, bombs) {
-	if (bombs != 0) {
-		return
-	}
-	var possitions = [-1, -101, -100, -99, 1, 101, 100, 99]
-	for (let possition of possitions) {
-		checkNearCells(newCellId + possition)
-		clickedCellStyle(newCellId + possition)
-	}
-}
-
-
-
-
-
-
 
 function assignBombs(currentCell) {
 	/* -1 are the bombs */
+	/* we can increase de difficulty of the game by changing number of rows */
 	let numberOfRows = document.getElementById('cellNumberInput').value
 	currentCell.innerHTML = randomNumberGenerator(-1, numberOfRows)
 
-	// save the number of bombs
+	/* save the number of bombs */
 	if (currentCell.innerHTML == -1) {
-		++ gameStatus.bombCells
+		++gameStatus.bombCells
 	}
 }
 
-function checkForBomb(cellId, position) {
-	try {
-		var bombIsNear = document.getElementById(cellId + position).innerHTML == -1
-	} catch (error) {
-		// nothing to do here
-		// we just catch the error so that checkCells() continues
-	}
-	return bombIsNear;
+function searchForId(cell_id) {
+	return gameStatus.gameboard_ids.includes(cell_id)
 }
+
+function searchForBomb(cell_id) {
+	return document.getElementById(cell_id).innerHTML == -1
+}
+
 
 function loseGame(cellId) {
 	document.getElementById(cellId).style.backgroundColor = 'red'
@@ -166,7 +139,7 @@ function loseGame(cellId) {
 	document.location.reload()
 }
 
-function winGame() {
+function checkWin() {
 	if (gameStatus.gridCells - gameStatus.clickedCells == gameStatus.bombCells) {
 		alert('WIN!')
 	}
@@ -189,6 +162,12 @@ function clickedCellStyle(cellId) {
 }
 
 function flaggedCellStyle(cellId) {
-	document.getElementById(cellId).style.backgroundColor = 'black'
-	document.getElementById(cellId).style.color = 'black'
+	/* unflagging a cell */
+	if (document.getElementById(cellId).style.backgroundColor == 'black') {
+		defaultCellStyle(cellId)
+	/* flagging a cell */
+	} else {
+		document.getElementById(cellId).style.backgroundColor = 'black'
+		document.getElementById(cellId).style.color = 'black'
+	}
 }
