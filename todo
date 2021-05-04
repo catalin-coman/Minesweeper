@@ -1,0 +1,32 @@
+Să se implementeze un joc de minesweeper. 
+Cu click normal detonezi căsuța, cu click dreapta pui steguleț. 
+Să se afișeze un mesaj de victorie în momentul în care jocul este rezolvat
+
+HTML
+  1.  H1         - DONE
+  2.  Board size - DONE
+  3.  Board      - DONE
+
+Javascript
+  1.  get user input for the size of the board      - DONE
+  2.  create the board                              - DONE
+  3.  allocate mines                                - DONE
+  4.  left click                                    - DONE
+  5.  right click                                   - DONE
+  6.  wining the game                               - DONE
+  7.  loosing the game                              - DONE
+
+  8. autoclick the cells that have innnerHtml == 0  - 
+    - repeat leftClick function if innerHtml == 0
+
+CSS
+  1.  H1                                            - DONE
+  2.  Board size                                    - DONE
+  3.  Board                                         - DONE
+  4.  Centering the table into the div              - DONE
+
+BUGS
+  1.  it doesnt show win messagen properly
+  2.  autocheck function only checks nearby cells
+    - we must implement it so that it checks all
+    cells ultill it finds a number != 0

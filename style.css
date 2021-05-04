@@ -1,0 +1,52 @@
+body {
+  background-image: url('images\\198-1988283_bomb-png-icon-free-transparent-png.png');
+  background-size: 55%;
+  background-repeat: no-repeat;
+  background-position-x: 60%;
+  background-position-y: -1%;
+}
+
+h1 {
+  text-align: center;
+  font-size: 300%;
+  font-family: 'Courier New', Courier, monospace;
+  width: 482px;
+  position: absolute;
+  margin-left: -241px;
+  left: 50%;
+}
+
+.cellNumberId {
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  width: 482px;
+  position: absolute;
+  top: 9.5%;
+  left: 50%;
+  margin-left: -241px;
+}
+
+.gameBoardDiv {
+  height: 482px;
+  width: 482px;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  margin-top: -241px;
+  margin-left: -241px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  
+}
+
+table {
+  border-color: black;
+  border: 1px;
+  align-self: center;
+}
+
+td {
+  cursor: pointer;
+  vertical-align: middle;
+}

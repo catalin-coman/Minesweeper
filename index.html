@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minesweeper game</title>
+  <script src="script.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1 id="gameTitle">Minesweeper game</h1>
+
+  <div class="cellNumberId">
+    <p>Input the number of rows and collumns</p>
+    <input type="number" id="cellNumberInput" min="1" max="20" title="Please enter a number between 1 and 20">
+    <input type="button" value="create grid" id="boardSizeSubmit" onclick="createGrid()">
+  </div>
+
+  <div class="gameBoardDiv"></div>
+  
+</body>
+
+</html>
