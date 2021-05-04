@@ -1,6 +1,5 @@
 var gameStatus = {
 	gridCells: 0,
-	clickedCells: 0,
 	bombCells: 0,
 	gameboard_ids: [],
 	searched_ids: [],
@@ -61,6 +60,7 @@ function addClickEvent() {
 
 
 function checkCell() {
+
 	/* user clicks a bomb cell */
 	if (searchForBomb(gameStatus.ids_to_search[0])) {
 		loseGame(gameStatus.ids_to_search[0])
@@ -99,14 +99,17 @@ function checkCell() {
 
 					/* adding the new id to the array of id's to search for 
 					if it is within the gameboard id's and hasn't been searched for yet  */
-					if (searchForId(new_id) && !gameStatus.searched_ids.includes(new_id)) {
+					if (searchForId(new_id) && !searchForSearchedId(new_id)) {
 						gameStatus.ids_to_search.push(new_id)
 						gameStatus.searched_ids.push(new_id)
 					}
 				}
 			}
 
-			/* removing the searched id */
+			/* removing the searched id and adding it to the searched id's array*/
+			if (!searchForSearchedId(gameStatus.ids_to_search[0])) {
+				gameStatus.searched_ids.push(gameStatus.ids_to_search[0])
+			}
 			gameStatus.ids_to_search.shift()
 		}
 	}
@@ -145,6 +148,10 @@ function searchForBomb(cell_id) {
 	return document.getElementById(cell_id).innerHTML == -1
 }
 
+function searchForSearchedId(cell_id) {
+	return gameStatus.searched_ids.includes(cell_id)
+}
+
 
 function loseGame(cellId) {
 	document.getElementById(cellId).style.backgroundColor = 'red'
@@ -154,10 +161,9 @@ function loseGame(cellId) {
 }
 
 function checkWin() {
-	if (gameStatus.gridCells - gameStatus.clickedCells == gameStatus.bombCells) {
+	if (gameStatus.gridCells - gameStatus.searched_ids.length == gameStatus.bombCells) {
 		alert('WIN!')
 	}
-	console.log(gameStatus.gridCells)
 }
 
 function randomNumberGenerator(min, max) {
@@ -174,11 +180,9 @@ function defaultCellStyle(cell_id) {
 function clickedCellStyle(cellId) {
 	document.getElementById(cellId).style.backgroundColor = 'white'
 	document.getElementById(cellId).style.color = 'black'
-	++gameStatus.clickedCells
 }
 
 function flaggedCellStyle(cell_id) {
 	document.getElementById(cell_id).style.backgroundColor = 'black'
 	document.getElementById(cell_id).style.color = 'black'
 }
-
